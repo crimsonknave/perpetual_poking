@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     perpetual_poking (0.1.0)
+      activesupport
       cot (= 0.1.0)
 
 GEM

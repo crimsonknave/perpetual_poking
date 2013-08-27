@@ -23,14 +23,36 @@ module PerpetualPoking
     property :lists
     property :email_addresses
 
-    def self.get(id)
+    def self.find(id)
       resp = PerpetualPoking.client.get "/contacts/#{id}"
-      raise PerpetualPoking::AuthenticationError.new resp.body if resp.code == 401
-      raise PerpetualPoking::NotFoundError.new resp.message if resp.code == 404
-      # This *should* never come up since we should be setting them correctly
-      raise PerpetualPoking::InvalidHeadersError.new resp.message if resp.code == 406
-      raise PerpetualPoking::ServerError.new resp.message if resp.code != 200
       Contact.new resp.body
+    end
+
+    def self.limit(num)
+      PerpetualPoking::Collection.new(self).limit(num)
+    end
+    def self.where(args)
+      PerpetualPoking::Collection.new(self).where(args)
+    end
+
+    def self.search(params)
+      resp = PerpetualPoking.client.get('/contacts', params)
+      resp.body
+    end
+
+    def save!
+      if exists? and !changed?
+        puts "No changes to the contact, no rest call required" #turn this into a log
+        return true
+      end
+      if exists?
+        resp = PerpetualPoking.client.put("/contacts/#{id}", serializable_hash)
+      else
+        resp = PerpetualPoking.client.post("/contacts", serializable_hash)
+      end
+      #Added these to cot,but not pushed
+      @previously_changed = changes
+      @changed_attributes.clear
     end
   end
 end

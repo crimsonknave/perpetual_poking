@@ -1,10 +1,12 @@
 require 'cot'
+require 'active_support/all'
 
 require 'perpetual_poking/version'
 require 'perpetual_poking/client'
 require 'perpetual_poking/configuration'
 require 'perpetual_poking/exceptions'
 require 'perpetual_poking/response'
+require 'perpetual_poking/collection'
 
 require 'perpetual_poking/contact'
 
